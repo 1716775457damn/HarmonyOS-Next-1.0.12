@@ -1,114 +1,56 @@
-//定义接口并使用
-interface IAnimal {
-  name: string;
-  age: number;
-}
+@Entry
+@Component
+struct Index {
+  @State message: string = 'Hello World'
+  @State testResult: string = ''
 
-interface ICat extends IAnimal {
-  hair: string;
-}
+  build() {
+    Column() {
+      Text('TypeScript Demo')
+        .fontSize(24)
+        .fontWeight(FontWeight.Bold)
+        .margin(20)
 
-interface IDog extends IAnimal {
-  color: string;
-}
+      Text(this.testResult)
+        .fontSize(16)
+        .margin(10)
+        .width('90%')
 
-let dog1: IDog = {
-  name: '小黑',
-  age: 3,
-  color: '黑色'
-};
+      Button('Test Generic Function')
+        .onClick(() => {
+          let result = this.genericFunction<string>('Hello TypeScript')
+          this.testResult = `Generic Result: ${result}`
+        })
+        .margin(10)
 
+      Button('Test Array Length')
+        .onClick(() => {
+          let arr = [1, 2, 3, 4, 5]
+          this.getLength(arr)
+        })
+        .margin(10)
 
-///////////////////////////////////////////////////////////////
-//实现接口的类
-interface IDog {
-  name: string;
-  age: number;
-  jump: () =&gt; void;
-}
-
-class Dog implements IDog {
-  name: string;
-  age: number;
-  desc: string;
-
-  constructor(name: string, age: number, desc: string) {
-    this.name = name;
-    this.age = age;
-    this.desc = desc;
+      Button('Test Multiple Types')
+        .onClick(() => {
+          this.multipleTypes('name', 25)
+        })
+        .margin(10)
+    }
   }
 
-  jump() {
-    console.log(`${this.name} is jumping.`);
+  // 简单泛型函数
+  private genericFunction<T>(value: T): T {
+    return value
+  }
+
+  // 数组长度检查
+  private getLength<T>(arr: T[]): void {
+    this.testResult = `Array length is: ${arr.length}`
+  }
+
+  // 多类型参数函数
+  private multipleTypes<T, U>(name: T, value: U): void {
+    this.testResult = `Name: ${name}, Value: ${value}`
   }
 }
-
-let dog: Dog = new Dog('小飞', 2, '是一只非常帅气的二哈');
-dog.jump();
-
-
-
-////////////////////////////////////////////
-//泛型函数
-function fn<t>(param: T): T {
-  return param;
-}
-
-fn<string>('Hello');
-fn<number>(123);
-fn<boolean>(true);
-fn<number[]>([1, 2, 3, 4, 5]);
-
-
-
-///////////////////////////////////////////////////////////
-//泛型约束
-interface ILength {
-  length: number;
-}
-
-function fn<t extends ilength>(param: T) {
-  console.log(param.length);
-}
-
-fn<string>('abc');
-fn<number[]>([1, 2, 3]);
-
-//多个泛型变量
-function fn<t1, t2>(param1: T1, param2: T2) {
-  console.log('参数1', param1);
-  console.log('参数2', param2);
-}
-
-fn<string, boolean>('Hello', true);
-fn<number, string>(123, 'abc');
-
-//泛型接口
-interface IdFunc<t> {
-  id: (value: T) =&gt; T;
-  ids: () =&gt; T[];
-}
-
-let obj: IdFunc<number> = {
-  id(value: number) {
-    return value;
-  },
-  ids() {
-    return [1, 2, 3];
-  }
-};
-
-//泛型类
-class Person<t> {
-  id: T;
-  constructor(id: T) {
-    this.id = id;
-  }
-  getId(): T {
-    return this.id;
-  }
-}
-
-let p: Person<number> = new Person<number>(10);
-let p2: Person<string> = new Person<string>('abc');
 
